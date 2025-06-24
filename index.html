@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Challenge Cinta Sania (ULTIMATE!)</title>
+    <title>Check Khodam Sania (ULTIMATE!)</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif; /* Font lebih simple dan keren */
+            font-family: 'Arial', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-image: linear-gradient(to right top, #a18cd1, #fbc2eb); /* Gradien ungu-pink lembut */
+            background-image: linear-gradient(to right top, #a18cd1, #fbc2eb);
             color: #333;
             text-align: center;
             overflow: hidden;
@@ -30,13 +30,13 @@
             z-index: 10;
         }
         h1 {
-            color: #6a1b9a; /* Ungu gelap */
+            color: #6a1b9a;
             font-size: 3.5em;
             margin-bottom: 20px;
             text-shadow: 2px 2px #e1bee7;
         }
         h2 {
-            color: #d81b60; /* Merah gelap */
+            color: #d81b60;
             font-size: 2.5em;
             margin-bottom: 15px;
         }
@@ -74,8 +74,8 @@
             margin-top: 20px;
         }
         #quizGameArea .option-button {
-            background-color: #ede7f6; /* Ungu muda */
-            color: #4527a0; /* Ungu gelap */
+            background-color: #ede7f6;
+            color: #4527a0;
             border: 2px solid #7e57c2;
             padding: 12px 20px;
             border-radius: 25px;
@@ -120,7 +120,7 @@
         #quizFeedback {
             margin-top: 15px;
             font-weight: bold;
-            font-size: 1.4em; /* Lebih besar */
+            font-size: 1.4em;
             color: #d32f2f;
         }
         #quizCount {
@@ -144,7 +144,7 @@
             color: #ef5350;
         }
         .whatsapp-button {
-            background-color: #25D366; /* Warna WhatsApp */
+            background-color: #25D366;
         }
         .whatsapp-button:hover {
             background-color: #1DA851;
@@ -156,25 +156,38 @@
             margin-top: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border: 3px solid #d81b60;
+            display: none; /* Awalnya sembunyikan gambar hadiah */
+        }
+        #revealImageButton {
+            background-color: #ffc107;
+            color: #333;
+        }
+        #revealImageButton:hover {
+            background-color: #ffb300;
         }
 
-        /* Pesan jeda */
-        #pauseMessageArea {
+        /* Pesan jeda / Feedback Emotikon Besar */
+        #feedbackOverlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             color: white;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            font-size: 4em;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
             z-index: 1000;
-            cursor: pointer;
+        }
+        #feedbackOverlay .message {
+            font-size: 0.5em;
+            margin-top: 20px;
+            font-weight: bold;
         }
 
         /* Efek confetti untuk kemenangan */
@@ -197,12 +210,12 @@
 <body>
     <div class="container" id="introContainer">
         <h1>Challenge Spesial Untuk Sania! ✨</h1>
-        <p>Aku punya sebuah tantangan seru buat kamu! Jawab **20 pertanyaan acak** ini dengan benar. Kalau kamu berhasil, ada hadiah spesial. Kalau tidak... ada tantangan lucu menunggu! 😉</p>
+        <p>Aku punya sebuah tantangan seru buat kamu! Jawab **20 pertanyaan acak** ini dengan benar. Ada hadiah dan konsekuensi lucu menunggu! 😉</p>
         <button onclick="startQuiz()">Mulai Tantangan Gila!</button>
     </div>
 
     <div class="container" id="quizGameArea" style="display: none;">
-        <h2>Quiz Cinta: Seberapa Kenal Kamu Aku? 🤔</h2>
+        <h2>Check Khodam: Seberapa Kenal Kamu Aku? 🤔</h2>
         <p id="quizQuestion"></p>
         <div id="optionsContainer" class="options-container">
             </div>
@@ -218,7 +231,8 @@
         <div id="successResult">
             <h2 class="result-message success-message">EDAN! Kamu HEBAT BANGET! 🎉</h2>
             <p style="font-size: 1.2em;">Selamat, Sania! Kamu berhasil menjawab <span id="finalScoreSuccess"></span> dari 20 pertanyaan dengan sempurna! Kamu memang yang paling jago dan paling kenal aku!</p>
-            <p style="font-size: 1.5em; color: #6a1b9a; font-weight: bold;">Hadiahmu spesial dari aku, ini dia! 😉</p>
+            <p style="font-size: 1.5em; color: #6a1b9a; font-weight: bold;">Ini hadiah buat kamu, klik aja! 😉</p>
+            <button id="revealImageButton" onclick="revealSuccessImage()">Klik untuk Lihat Hadiah!</button>
             <img id="successImage" src="https://i.imgur.com/iliNnu4.jpeg" alt="Hadiah Spesial Kaka">
             <button onclick="startQuiz()">Main Lagi!</button>
         </div>
@@ -233,8 +247,9 @@
         </div>
     </div>
 
-    <div id="pauseMessageArea" style="display: none;">
-        <p>Kalem, ulah rurusuhan! Lanjut! 😉</p>
+    <div id="feedbackOverlay" style="display: none;">
+        <span id="overlayEmoticon"></span>
+        <span id="overlayMessage" class="message"></span>
     </div>
 
     <script>
@@ -258,7 +273,7 @@
                 answer: "graduation"
             },
             {
-                type: "text",
+                type: "text", // Ini tetap teks karena ada format tanggal
                 question: "Kapan tanggal jadian kita? (contoh: 15 Juni)",
                 answer: "15 juni", // Ganti dengan tanggal jadian kalian yang sebenarnya!
                 isAlwaysCorrect: true // Pertanyaan ini selalu dianggap benar
@@ -305,7 +320,31 @@
                 options: ["Besok", "Minggu Depan", "Nanti Aja", "Sekarang Juga"],
                 answer: "besok"
             },
-            // Pertanyaan tambahan tentang band favorit (total 20 - 11 = 9 pertanyaan)
+            // Pertanyaan baru: "Seberapa Ganteng Pacar Sania" (Pilihan Ganda!)
+            {
+                type: "mc", // Diubah jadi MC
+                question: "Seberapa ganteng pacar Sania?",
+                options: ["10", "100", "100000000000000000", "99999999999999999"], // Opsi MC
+                answer: "99999999999999999",
+                isAlwaysCorrect: true // Tetap selalu benar
+            },
+            // Pertanyaan Tes Logika Mudah
+            {
+                type: "text",
+                question: "Kalau kamu punya 3 apel dan kamu ambil 2, berapa apel yang kamu punya? (angka)",
+                answer: "2"
+            },
+            {
+                type: "text",
+                question: "Aku selalu datang tapi tak pernah tiba. Siapakah aku? (satu kata)",
+                answer: "besok"
+            },
+            {
+                type: "text",
+                question: "Apa yang punya banyak mata tapi tidak bisa melihat? (satu kata)",
+                answer: "kentang"
+            },
+            // Pertanyaan band favorit (5 sisanya)
             {
                 type: "mc",
                 question: "Siapa vokalis utama band Slipknot?",
@@ -335,30 +374,6 @@
                 question: "Band mana yang dikenal dengan lagu 'Bat Country'?",
                 options: ["Slipknot", "System of a Down", "Avenged Sevenfold", "Bullet For My Valentine"],
                 answer: "avenged sevenfold"
-            },
-            {
-                type: "mc",
-                question: "Instrument apa yang khas dari member 'Sid Wilson' di Slipknot?",
-                options: ["Gitar", "Bass", "Turntables/DJ", "Drum"],
-                answer: "turntables/dj"
-            },
-            {
-                type: "mc",
-                question: "Dari band-band ini, mana yang berasal dari Iowa, Amerika Serikat?",
-                options: ["Metallica", "Avenged Sevenfold", "Slipknot", "Iron Maiden"],
-                answer: "slipknot"
-            },
-            {
-                type: "mc",
-                question: "Lagu 'Afterlife' yang populer itu dari album Avenged Sevenfold yang mana?",
-                options: ["City of Evil", "Avenged Sevenfold (Self-Titled)", "Nightmare", "The Stage"],
-                answer: "avenged sevenfold (self-titled)"
-            },
-            {
-                type: "mc",
-                question: "Band ini terkenal dengan logo 'Deathbat'. Siapa mereka?",
-                options: ["Disturbed", "Lamb of God", "Avenged Sevenfold", "Five Finger Death Punch"],
-                answer: "avenged sevenfold"
             }
         ];
         
@@ -384,6 +399,8 @@
             document.getElementById('currentScore').innerText = score;
             document.getElementById('totalQuestionsCount').innerText = totalQuestions;
             document.getElementById('retryButtonAfterFail').style.display = 'none'; // Sembunyikan tombol coba lagi
+            document.getElementById('successImage').style.display = 'none'; // Sembunyikan gambar hadiah awal
+            document.getElementById('revealImageButton').style.display = 'inline-block'; // Tampilkan tombol reveal
             displayQuestion();
         }
 
@@ -448,12 +465,13 @@
 
                 if (isCorrect) {
                     feedbackElement.style.color = '#4CAF50';
-                    feedbackElement.innerText = "Benar! Hebat! 👍😄"; // Emoticon benar
+                    feedbackElement.innerText = "Benar! Hebat! 👍😄"; 
                     clickedButton.classList.add('correct');
                     score++;
+                    showOverlay("🎉", "BENAR! EDAN!"); // Emoticon besar
                 } else {
                     feedbackElement.style.color = '#d32f2f';
-                    feedbackElement.innerText = "Kurang tepat! 😢"; // Emoticon sedih
+                    feedbackElement.innerText = "Kurang tepat! 😢"; 
                     clickedButton.classList.add('wrong');
                     // Highlight correct answer
                     allOptionButtons.forEach(button => {
@@ -461,40 +479,23 @@
                             button.classList.add('correct');
                         }
                     });
+                    showOverlay("😂", "SALAH! WKWKWK!"); // Emoticon besar
                 }
             } else if (type === "text") {
-                const textAnswerInput = document.getElementById('textAnswerInput');
+                  const textAnswerInput = document.getElementById('textAnswerInput');
                 const submitTextAnswerBtn = document.getElementById('submitTextAnswerBtn');
                 textAnswerInput.disabled = true;
                 submitTextAnswerBtn.disabled = true;
 
                 if (isCorrect) {
                     feedbackElement.style.color = '#4CAF50';
-                    feedbackElement.innerText = "Benar! Akurat! 👍😄"; // Emoticon benar
+                    feedbackElement.innerText = "Benar! Akurat! 👍😄";
                     score++;
-                } else {
-                    feedbackElement.innerText = "Kurang tepat! 😢"; // Emoticon sedih
-                    clickedButton.classList.add('wrong');
-                    // Highlight correct answer
-                    allOptionButtons.forEach(button => {
-                        if (button.innerText.toLowerCase().trim() === correctAnswer.toLowerCase().trim()) {
-                            button.classList.add('correct');
-                        }
-                    });
-                }
-            } else if (type === "text") {
-                const textAnswerInput = document.getElementById('textAnswerInput');
-                const submitTextAnswerBtn = document.getElementById('submitTextAnswerBtn');
-                textAnswerInput.disabled = true;
-                submitTextAnswerBtn.disabled = true;
-
-                if (isCorrect) {
-                    feedbackElement.style.color = '#4CAF50';
-                    feedbackElement.innerText = "Benar! Akurat! 👍😄"; // Emoticon benar
-                    score++;
+                    showOverlay("🎉", "BENAR! EDAN!");
                 } else {
                     feedbackElement.style.color = '#d32f2f';
-                    feedbackElement.innerText = `Salah! Jawaban benar: "${correctAnswer}" 😈`; // Emoticon nertawain
+                    feedbackElement.innerText = `Salah! Jawaban benar: "${correctAnswer}" 😈`;
+                    showOverlay("😂", "SALAH! WKWKWK!");
                 }
             }
             
@@ -502,16 +503,22 @@
 
             currentQuestionIndex++;
             
-            // Logika pesan jeda "Kalem ulah rurusuhan"
-            if (currentQuestionIndex > 0 && currentQuestionIndex % 5 === 0 && currentQuestionIndex < totalQuestions) {
-                showPauseMessage();
-                setTimeout(() => {
-                    hidePauseMessage();
+            // Logika pesan jeda "Kalem ulah rurusuhan" dan lanjut ke pertanyaan berikutnya
+            setTimeout(() => { // Jeda untuk emotikon besar
+                hideOverlay();
+                currentQuestionIndex++;
+                if (currentQuestionIndex > 0 && currentQuestionIndex % 5 === 0 && currentQuestionIndex < totalQuestions) {
+                    showOverlay("🤔", "Kalem, ulah rurusuhan! Lanjut! 😉"); // Pesan jeda
+                    setTimeout(() => {
+                        hideOverlay();
+                        displayQuestion();
+                    }, 3000); // Tampilkan pesan 3 detik
+                } else if (currentQuestionIndex < totalQuestions) {
                     displayQuestion();
-                }, 3000); // Tampilkan pesan 3 detik
-            } else {
-                setTimeout(displayQuestion, 2500); // Lanjut pertanyaan berikutnya setelah 2.5 detik
-            }
+                } else {
+                    showResult();
+                }
+            }, 2000); // Tampilkan emotikon besar 2 detik
         }
 
         function checkTextAnswer() {
@@ -519,14 +526,20 @@
             checkAnswer(textAnswerInput.value, shuffledQuestions[currentQuestionIndex].answer, null, "text", shuffledQuestions[currentQuestionIndex].isAlwaysCorrect);
         }
 
-        function showPauseMessage() {
-            document.getElementById('pauseMessageArea').style.display = 'flex';
+        function showOverlay(emoticon, message) {
+            document.getElementById('overlayEmoticon').innerText = emoticon;
+            document.getElementById('overlayMessage').innerText = message;
+            document.getElementById('feedbackOverlay').style.display = 'flex';
         }
 
-        function hidePauseMessage() {
-            document.getElementById('pauseMessageArea').style.display = 'none';
+        function hideOverlay() {
+            document.getElementById('feedbackOverlay').style.display = 'none';
         }
 
+        function revealSuccessImage() {
+            document.getElementById('revealImageButton').style.display = 'none';
+            document.getElementById('successImage').style.display = 'block';
+        }
 
         function showResult() {
             document.getElementById('quizGameArea').style.display = 'none';
@@ -545,7 +558,7 @@
                 document.getElementById('failResult').style.display = 'block';
                 const whatsappLink = `https://wa.me/${whatsappFailNumber}?text=${encodeURIComponent(whatsappFailMessage)}`;
                 document.getElementById('whatsappFailBtn').href = whatsappLink;
-                // Tampilkan tombol coba lagi hanya setelah PAP button diklik (simulasi) atau setelah jeda
+                // Tampilkan tombol coba lagi hanya setelah PAP button diklik (simulasi)
                 document.getElementById('whatsappFailBtn').onclick = () => {
                     setTimeout(() => {
                         document.getElementById('retryButtonAfterFail').style.display = 'inline-block';
